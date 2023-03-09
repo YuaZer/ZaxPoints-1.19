@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ZaxPoints">
+    <output-path>$PROJECT_DIR$/out/artifacts/ZaxPoints</output-path>
+    <root id="archive" name="ZaxPoints.jar">
+      <element id="module-output" name="ZaxPoints-1.19" />
+      <element id="file-copy" path="$PROJECT_DIR$/config.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
+    </root>
+  </artifact>
+</component>

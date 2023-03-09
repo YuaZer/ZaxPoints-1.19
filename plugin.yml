@@ -1,0 +1,14 @@
+name: ZaxPoints
+main: io.github.yuazer.zaxpoints.Main
+version: 0.1
+api-version: 1.13
+depend:
+  - PlaceholderAPI
+authors:
+  - YuaZer
+commands:
+  zaxpoints:
+    aliases:
+      - zaxp
+      - zp
+    description: Z菌积分插件
