@@ -6,10 +6,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RankPoints extends PlaceholderExpansion {
+    private final ExecutorService executorService;
+
+    public RankPoints() {
+        // 创建一个线程数为4的固定大小线程池
+        executorService = Executors.newFixedThreadPool(4);
+    }
+
     @Override
     public String getIdentifier() {
         return "zaxpoints";
@@ -27,13 +38,14 @@ public class RankPoints extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(Player player, String identifier) {
-            String regex = "(.*?)_[0-9]+";
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(identifier);
-            if (matcher.find()) {
-                String rankAPI = matcher.group(1); // 获取第一个捕获组的内容
-                if (Main.getInstance().getConfig().getStringList("PointsSetting.rankPAPI").contains("%" + rankAPI + "%")) {
-                    int rankNumber = Integer.parseInt(identifier.replace(rankAPI + "_", "").replace("%", ""));
+        String regex = "(.*?)_[0-9]+";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(identifier);
+        if (matcher.find()) {
+            String rankAPI = matcher.group(1); // 获取第一个捕获组的内容
+            if (Main.getInstance().getConfig().getStringList("PointsSetting.rankPAPI").contains("%" + rankAPI + "%")) {
+                int rankNumber = Integer.parseInt(identifier.replace(rankAPI + "_", "").replace("%", ""));
+                CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
                     Map<UUID, Integer> pointsMap = new HashMap<>();
                     for (Player p : Bukkit.getOnlinePlayers()) {
                         int points = Integer.parseInt(PlaceholderAPI.setPlaceholders(p, "%" + rankAPI + "%"));
@@ -47,11 +59,18 @@ public class RankPoints extends PlaceholderExpansion {
                     } else {
                         return ("名次出错");
                     }
-                } else {
-                    return ("配置文件并未有该变量的配置");
+                }, executorService);
+                try {
+                    return future.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
                 }
             } else {
-                return ("变量名检测出错");
+                return ("配置文件并未有该变量的配置");
             }
+        } else {
+            return ("变量名检测出错");
+        }
+        return "error";
     }
 }
