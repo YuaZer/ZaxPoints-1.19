@@ -57,7 +57,7 @@ public class RankPoints extends PlaceholderExpansion {
                     if (rankNumber > 0 && rankNumber <= sortedPlayers.size()) {
                         return (Bukkit.getPlayer(sortedPlayers.get(rankNumber - 1).getKey()).getName());
                     } else {
-                        return ("名次出错");
+                        return (Main.getInstance().getConfig().getString("Message.rankNullError").replace("&", "§"));
                     }
                 }, executorService);
                 try {

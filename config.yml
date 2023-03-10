@@ -1,5 +1,6 @@
 Message:
   reload: "&a重载成功"
+  rankNullError: "&7虚位以待"
 PointsSetting:
   #需要做成排行榜的变量[%zaxpoints_变量名_名次%]获取对应玩家名
   #以%cmi_usermeta_points%为例，%zaxpoints_cmi_usermeta_points_名次% 获取对应玩家名
