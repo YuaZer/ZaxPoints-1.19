@@ -2,7 +2,17 @@ Message:
   reload: "&a重载成功"
   rankNullError: "&7虚位以待"
 PointsSetting:
-  #需要做成排行榜的变量[%zaxpoints_变量名_名次%]获取对应玩家名
-  #以%cmi_usermeta_points%为例，%zaxpoints_cmi_usermeta_points_名次% 获取对应玩家名
+  #需要做成排行榜的变量
+  #[%zaxpoints_变量名_名次%]获取对应玩家名
+  #[%zaxpointsR_变量名_名次%] 表示倒序名次
+  #以%nyeconomy_精粹%为例，
+  #%zaxpoints_nyeconomy_精粹_1% 获取第一名的玩家名
+  #%zaxpointsR_nyeconomy_精粹_1% 获取倒数第一名的玩家名
+  #目前仅支持整数类型的变量
   rankPAPI:
     - "%cmi_user_metaint_测试点%"
+    - "%nyeconomy_精粹%"
+    - "%nyeconomy_幸运值%"
+#想要离线保存的变量(当玩家不在线的时候调用该数据)
+OfflineData:
+  - "%player_level%"

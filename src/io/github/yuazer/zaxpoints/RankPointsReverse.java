@@ -15,17 +15,17 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RankPoints extends PlaceholderExpansion {
+public class RankPointsReverse extends PlaceholderExpansion {
     private final ExecutorService executorService;
 
-    public RankPoints() {
+    public RankPointsReverse() {
         // 创建一个线程数为4的固定大小线程池
         executorService = Executors.newFixedThreadPool(4);
     }
 
     @Override
     public String getIdentifier() {
-        return "zaxpoints";
+        return "zaxpointsR";
     }
 
     @Override
@@ -63,9 +63,10 @@ public class RankPoints extends PlaceholderExpansion {
                         }
                         pointsMap.put(p.getUniqueId(), points);
                     }
-                    List<Map.Entry<UUID, Integer>> sortedPlayers = pointsMap.entrySet().stream()
+                    List<Map.Entry<UUID, Integer>> sortedPlayers = new ArrayList<>(pointsMap.entrySet().stream()
                             .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                            .toList();
+                            .toList());
+                    Collections.reverse(sortedPlayers);
                     if (rankNumber > 0 && rankNumber <= sortedPlayers.size()) {
                         return (Bukkit.getPlayer(sortedPlayers.get(rankNumber - 1).getKey()).getName());
                     } else {
