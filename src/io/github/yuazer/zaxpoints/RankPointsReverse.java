@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class RankPointsReverse extends PlaceholderExpansion {
     private final ExecutorService executorService;
@@ -48,27 +49,27 @@ public class RankPointsReverse extends PlaceholderExpansion {
             if (Main.getInstance().getConfig().getStringList("PointsSetting.rankPAPI").contains("%" + rankAPI + "%")) {
                 int rankNumber = Integer.parseInt(identifier.replace(rankAPI + "_", "").replace("%", ""));
                 CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
-                    Map<UUID, Integer> pointsMap = new HashMap<>();
+                    Map<String, Integer> pointsMap = new HashMap<>();
                     File file = new File("plugins/ZaxPoints/OfflineSave");
                     File[] files = file.listFiles();
                     for (File f : files) {
                         Player p = Bukkit.getPlayer(f.getName().replace(".yml", ""));
-                        int points;
+                        int points = 0;
                         if (p != null) {
                             points = Integer.parseInt(PlaceholderAPI.setPlaceholders(p, "%" + rankAPI + "%"));
+                            pointsMap.put(p.getName(), points);
                         } else {
-//                            File f1 = new File("plugins/ZaxPoints/OfflineSave/"+f.getName());
                             YamlConfiguration conf = YamlConfiguration.loadConfiguration(f);
-                            points =  Integer.parseInt(conf.getString("%" + rankAPI + "%"));
+                            points = Integer.parseInt(conf.getString("%" + rankAPI + "%"));
+                            pointsMap.put(f.getName().replace(".yml", ""), points);
                         }
-                        pointsMap.put(p.getUniqueId(), points);
                     }
-                    List<Map.Entry<UUID, Integer>> sortedPlayers = new ArrayList<>(pointsMap.entrySet().stream()
+                    List<Map.Entry<String, Integer>> sortedPlayers = pointsMap.entrySet().stream()
                             .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                            .toList());
+                            .toList();
                     Collections.reverse(sortedPlayers);
                     if (rankNumber > 0 && rankNumber <= sortedPlayers.size()) {
-                        return (Bukkit.getPlayer(sortedPlayers.get(rankNumber - 1).getKey()).getName());
+                        return sortedPlayers.get(rankNumber - 1).getKey();
                     } else {
                         return (Main.getInstance().getConfig().getString("Message.rankNullError").replace("&", "§"));
                     }

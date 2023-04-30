@@ -1,6 +1,6 @@
 name: ZaxPoints
 main: io.github.yuazer.zaxpoints.Main
-version: 0.5
+version: 0.6
 api-version: 1.13
 depend:
   - PlaceholderAPI
